@@ -7,15 +7,19 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient({region: process.env.REGION});
 class Service {
     static async registrarNombres(request) {        
         try {
+          const {idPersona} = request;
           let response = await this.consumeStarWarsAPI(request);    
           let data = null;                    
           if(response) {
-            data = await this.insertarRegistroDynamo(request,response);            
+            await this.insertarRegistroDynamo(request,response);            
+            data = await this.obtenerNombresDynamo(null,idPersona);
           }
           
           if(data) {
             response = data;
+            response.msg = 'Se registro el dato correctamente';          
           }
+          console.log("response -> ", response)
           return response;
         } catch (error) {         
           throw new ErrorUtils({
@@ -57,21 +61,20 @@ class Service {
             colorCabello: data.hair_color,
             colorPiel: data.skin_color,
             colorOjos: data.eye_color,
-            AnioNacimiento:data.birth_year,
+            fechaNacimiento:data.birth_year,
             genero: data.gender,
-            mundoHome: data.homeworld,
+            hogar: data.homeworld,
             peliculas: data.films,
             especies: data.species,
             vehiculos: data.vehicles,
             navesEstelares: data.starships,
-            creado: data.created,
-            editado: data.edited,
+            fechaCreacion: data.created,
+            fechaModificacion: data.edited,
             url: data.url
           },
+          Exists: false
         };
-        await dynamoDb.put(params).promise();
-        const dynamoData = await this.obtenerNombres(null,idPersona);
-        return dynamoData;
+        await dynamoDb.put(params).promise();                
       } catch (error) {
         console.error("error -> ", error);
         throw new ErrorUtils({
@@ -83,11 +86,11 @@ class Service {
 
     }
 
-    static async obtenerNombres(request,inputPersona) {     
-      const idPersona = request && request.multiValueQueryStringParameters? request.multiValueQueryStringParameters.idPersona[0]: inputPersona;
-      let dynamo;
+    static async obtenerNombresDynamo(request,inputPersona) {   
+      const idPersona = request && request.pathParameters? request.pathParameters.idPersona: inputPersona;
+      let dynamo,params,paramsScan,errorMessage;
       try {
-        const params = {
+        params = {
           KeyConditionExpression: '#idPersona = :idPersona',
           ExpressionAttributeNames: {
             '#idPersona': 'idPersona',
@@ -97,25 +100,47 @@ class Service {
           },
           TableName: process.env.DYNAMO_TABLE_NAME,
         };
-        console.log("params -> ", params);
+
+        paramsScan = {
+          TableName: process.env.DYNAMO_TABLE_NAME,
+          Select: "ALL_ATTRIBUTES"
+        };
+
         if(idPersona) {
-          dynamo = await dynamoDb.query(params).promise();
-        } else {
-          const paramsScan = {
-            TableName: process.env.DYNAMO_TABLE_NAME,
-            Select: "ALL_ATTRIBUTES"
+          if(idPersona == 0){
+            dynamo = await dynamoDb.scan(paramsScan).promise();
+          } else {
+            console.log("inputPersona -> ", inputPersona)
+            dynamo = await dynamoDb.query(params).promise();            
           }
+        } else {
           dynamo = await dynamoDb.scan(paramsScan).promise();
         }
         
+        if(dynamo.Items.length == 0) {
+          errorMessage = ERROR_CONSTANTS.DYNAMO_NOT_FOUND.message;
+          throw new ErrorUtils({
+            code: ERROR_CONSTANTS.DYNAMO_NOT_FOUND.code,
+            statusCode: ERROR_CONSTANTS.DYNAMO_NOT_FOUND.httpCode,
+            errMsg: errorMessage
+          });
+        }
         return dynamo.Items;
       } catch (error) {
-        console.log("error -->>> ", error);
-        throw new ErrorUtils({
-          code: ERROR_CONSTANTS.ERROR_QUERY.code,
-          statusCode: ERROR_CONSTANTS.ERROR_QUERY.httpCode,
-          errMsg: ERROR_CONSTANTS.ERROR_QUERY.message,
-        });
+        if(errorMessage){
+          throw new ErrorUtils({
+            code: ERROR_CONSTANTS.DYNAMO_NOT_FOUND.code,
+            statusCode: ERROR_CONSTANTS.DYNAMO_NOT_FOUND.httpCode,
+            errMsg: errorMessage,
+          });
+        } else {
+          throw new ErrorUtils({
+            code: ERROR_CONSTANTS.ERROR_QUERY.code,
+            statusCode: ERROR_CONSTANTS.ERROR_QUERY.httpCode,
+            errMsg: ERROR_CONSTANTS.ERROR_QUERY.message,
+          });
+        }
+        
       }
     }
 }

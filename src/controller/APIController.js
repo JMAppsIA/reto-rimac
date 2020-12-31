@@ -13,8 +13,8 @@ const Utils = require("../utils/Utils");
     }
 
     module.exports.obtenerNombres = async (event) => {
-        try {       
-            const result = await Service.obtenerNombres(event);
+        try {        
+            const result = await Service.obtenerNombresDynamo(event);
             return Utils.createResponse(result);            
         } catch (error) {
             console.error("error >>> ", error);

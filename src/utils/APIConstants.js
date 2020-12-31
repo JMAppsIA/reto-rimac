@@ -9,7 +9,7 @@ module.exports.ERROR_CONSTANTS = {
     NOT_FOUND: {
         code:"0000001",
         httpCode: 404,
-        message:"Dato no encontrado"
+        message:"Dato no encontrado en SWAPI. Se omitio el registro."
     },
     ERROR_SAVE: {
         code: '0000002', 
@@ -20,6 +20,11 @@ module.exports.ERROR_CONSTANTS = {
         code: '0000003', 
         httpCode:500,
         message: 'Error al obtener data'
+    },
+    DYNAMO_NOT_FOUND: {
+        code:"0000004",
+        httpCode: 404,
+        message:"Dato no encontrado en dynamoDB."
     }
 };
 

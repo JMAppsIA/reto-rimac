@@ -38,7 +38,7 @@ functions:
     description: OBTENER NOMBRES    
     events:
       - http:
-          path: /challenge/personas/obtener
+          path: /challenge/personas/obtener/{idPersona}
           method: get
           cors: true
           
