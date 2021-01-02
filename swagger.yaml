@@ -68,7 +68,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/data'
+                $ref: '#/components/schemas/dataRegister'
         "404":
           description: Dato no encontrado en SWAPI. Se omitio el registro.
           content:
@@ -158,6 +158,25 @@ components:
         genero:
           type: string
           example: male
+    dataRegister:
+      required:
+      - response
+      - success
+      type: object
+      properties:
+        response:
+          $ref: '#/components/schemas/dataRegister_response'
+        success:
+          type: boolean
+          example: true
+    dataSuccessRegister:
+      required:
+      - idPersona
+      type: object
+      properties:
+        idPersona:
+          type: string
+          example: c9d2f607-dbb6-497a-bf48-47f08a45ac82
     Vehiculos:
       type: string
       example: https://swapi.py4e.com/api/vehicles/14/
@@ -362,3 +381,14 @@ components:
           example: false
         error:
           $ref: '#/components/schemas/inline_response_500_response_error'
+    dataRegister_response:
+      required:
+      - data
+      - msg
+      type: object
+      properties:
+        msg:
+          type: string
+          example: Operacion realizada correctamente
+        data:
+          $ref: '#/components/schemas/dataSuccessRegister'
