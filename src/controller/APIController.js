@@ -7,6 +7,7 @@ const { validateRegistrarNombres } = require("../validations/validateRegistrarNo
 
     module.exports.registrarNombres = async (event) => {          
         try {
+            console.log(`------ registrarNombres ------`);
             const request = Utils.getRequest(event);   
             await ValidationUtils.validateRequest(request,validateRegistrarNombres());                 
             const result = await Service.registrarNombres(request);
@@ -18,7 +19,8 @@ const { validateRegistrarNombres } = require("../validations/validateRegistrarNo
     }
 
     module.exports.obtenerNombres = async (event) => {
-        try {        
+        try {   
+            console.log(`------ obtenerNombres ------`);     
             const result = await Service.obtenerNombresDynamo(event);
             return Utils.createResponse(result);            
         } catch (error) {
