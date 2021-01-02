@@ -8,7 +8,7 @@ provider:
   profile: serverless-admin
   #region: us-east-2
   region: ${self:custom.regionName.${self:provider.stage}}
-  stage: ${opt:stage,'TEST'}
+  stage: ${opt:stage,'PROD'}
   apiGateway:
     shouldStartNameWithService: true
 
@@ -18,8 +18,8 @@ provider:
 # Custom Variables
 custom:  
   regionName:
-    TEST: us-east-2 
-    us-east-2: UEAST2
+    PROD: us-east-1
+    us-east-1: UEAST1
   dynamoTableName: ${ssm:/reto-rimac/test/dynamo-table-name}
 
 plugins:
