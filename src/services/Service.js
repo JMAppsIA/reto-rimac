@@ -4,6 +4,8 @@ const Axios = require('axios');
 const { ERROR_CONSTANTS } = require('../utils/APIConstants');
 const ErrorUtils = require('../utils/ErrorUtils');
 const { extractDateFromDateTime } = require('../utils/Utils');
+const RegistrarPersonaRequest = require('../model/request/RegistrarPersonaRequest');
+const RegistrarPersonaRequestSWAPI = require('../model/request/RegistrarPersonaRequestSWAPI');
 const dynamoDb = new AWS.DynamoDB.DocumentClient({region: process.env.REGION});
 class Service {
     static async registrarNombres(request) {   
@@ -14,8 +16,8 @@ class Service {
           //Consumimos el api externa SWAPI   
           const response = await this.consumeStarWarsAPI(request);
           //Insertamos la respuesta a DynamoDB                              
-          await this.insertarRegistroDynamo(request,response);            
-          data = await this.obtenerNombresDynamo(null,idPersona);
+         data = await this.insertarRegistroDynamo(request,response);            
+          //data = await this.obtenerNombresDynamo(null,idPersona);
 
           if(data) {
             responseFinal = data;
@@ -43,34 +45,29 @@ class Service {
 
     static async insertarRegistroDynamo(request,data) {
       try {
-        const {idPersona} = request;
-        //Validamos si existe data, para obtener los campos e insertarlos en Dynamo, sino insertamos el request enviado.
-        const items = {
-          idPersona: String(idPersona),
-          nombre: request.nombre ? request.nombre :  data.name,
-          peso: request.peso ? request.peso :  data.height,
-          masa: request.masa ? request.masa :  data.mass,
-          colorCabello: request.colorCabello ? request.colorCabello :  data.hair_color,
-          colorPiel: request.colorPiel ? request.colorPiel :  data.skin_color,
-          colorOjos: request.colorOjos ? request.colorOjos :  data.eye_color,
-          fechaNacimiento: request.fechaNacimiento ? request.fechaNacimiento :  data.birth_year,
-          genero: request.genero ? request.genero :  data.gender,
-          mundoNatal: request.mundoNatal ? request.mundoNatal :  data.homeworld,
-          peliculas: request.peliculas.length > 0 ? request.peliculas :  data.films,
-          especies: request.especies.length > 0 ? request.especies :  data.species,
-          vehiculos: request.vehiculos.length > 0 ? request.vehiculos :  data.vehicles,
-          navesEstelares: request.navesEstelares.length > 0 ? request.navesEstelares :  data.starships,
-          fechaCreacion: request.fechaCreacion ? request.fechaCreacion :  extractDateFromDateTime(data.created),
-          fechaModificacion: request.fechaModificacion ? request.fechaModificacion :  extractDateFromDateTime(data.edited),
-          url: request.url ? request.url : data.url
-        };
+        let idPersona = null;
+        let items = null;
+        if(data) {
+          //Si existe info en SWAPI, insertamos todo el response del api.
+          idPersona = String(request.idPersona);
+          items = new RegistrarPersonaRequestSWAPI(data,idPersona);
+        } else {
+          //Si no existe en SWAPI, insertamos el request que enviamos.
+          idPersona = uuid.v4();
+          request.idPersona = idPersona;
+          items = new RegistrarPersonaRequest(request);
+        }
+
         const params = {
           TableName: process.env.DYNAMO_TABLE_NAME,
           Item: items,
           Exists: false,
           UpdateItem: false,
         };
-        await dynamoDb.put(params).promise();                
+        await dynamoDb.put(params).promise();
+        return {
+          idPersona: idPersona
+        }                
       } catch (error) {
         console.error(`error --> ${error}`);
         throw new ErrorUtils({
