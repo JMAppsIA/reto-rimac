@@ -35,7 +35,7 @@
           "personas"
         ],
         "summary": "Obtener persona por idPersona",
-        "description": "Obtiene persona por idPersona",
+        "description": " La siguiente lambda, obtiene una persona o más a través del idPersona. Si este campo se filtra por “all”, el servicio listara todas las personas que se encuentren registradas en Dynamo. Si no se desea listar todos los registros, se debe filtrar por el ID de la persona.",
         "parameters": [
           {
             "name": "idPersona",
@@ -45,9 +45,8 @@
             "style": "simple",
             "explode": false,
             "schema": {
-              "minimum": 0,
-              "type": "integer",
-              "format": "int64"
+              "type": "string",
+              "example": "all"
             }
           }
         ],
@@ -81,7 +80,7 @@
           "personas"
         ],
         "summary": "Registrar Persona por idPersona",
-        "description": "Registrar Persona por idPersona",
+        "description": "La siguiente lambda, registra una persona a través del idPersona. Si este campo no se encuentra en el api de pruebas SWAPI, se procederá a registrar los datos ingresados en la petición POST. Caso contrario, se priorizaran los datos de respuesta del api de pruebas SWAPI.",
         "operationId": "idPersona",
         "requestBody": {
           "description": "idPersona obtenido de SWAPI",
@@ -255,13 +254,16 @@
             "example": 16
           },
           "nombre": {
-            "type": "string"
+            "type": "string",
+            "example": "Luke Skywalker"
           },
           "masa": {
-            "type": "string"
+            "type": "string",
+            "example": "77"
           },
           "colorCabello": {
-            "type": "string"
+            "type": "string",
+            "example": "blond"
           },
           "vehiculos": {
             "type": "array",
@@ -269,23 +271,20 @@
               "$ref": "#/components/schemas/Vehiculos"
             }
           },
-          "url": {
-            "type": "string"
-          },
-          "peso": {
+          "mundoNatal": {
             "type": "string"
           },
           "fechaNacimiento": {
-            "type": "string"
+            "type": "string",
+            "example": "19BBY"
           },
-          "fechaModificacion": {
-            "type": "string"
+          "url": {
+            "type": "string",
+            "example": "https://swapi.py4e.com/api/people/1/"
           },
-          "colorOjos": {
-            "type": "string"
-          },
-          "colorPiel": {
-            "type": "string"
+          "peso": {
+            "type": "string",
+            "example": "172"
           },
           "peliculas": {
             "type": "array",
@@ -299,6 +298,17 @@
               "$ref": "#/components/schemas/NavesEstelares"
             }
           },
+          "colorOjos": {
+            "type": "string",
+            "example": "blue"
+          },
+          "colorPiel": {
+            "type": "string",
+            "example": "fair"
+          },
+          "fechaModificacion": {
+            "type": "string"
+          },
           "especies": {
             "type": "array",
             "items": {
@@ -308,11 +318,9 @@
           "fechaCreacion": {
             "type": "string"
           },
-          "mundoNatal": {
-            "type": "string"
-          },
           "genero": {
-            "type": "string"
+            "type": "string",
+            "example": "male"
           }
         },
         "xml": {

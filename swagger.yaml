@@ -1,0 +1,364 @@
+---
+openapi: 3.0.0
+info:
+  title: Swagger Reto Rimac - SWAPI
+  description: "Swagger para el API desarrollada (Reto Rimac) \n"
+  contact:
+    email: jorge.herrera.tume@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0-oas3
+servers:
+- url: https://h7mga73h1a.execute-api.us-east-2.amazonaws.com/TEST
+  description: Ambiente de pruebas (TEST)
+tags:
+- name: personas
+  description: Todo sobre personas
+  externalDocs:
+    description: Encuentra mas
+    url: https://github.com/JMAppsIA/reto-rimac
+paths:
+  /challenge/personas/obtener/{idPersona}:
+    get:
+      tags:
+      - personas
+      summary: Obtener persona por idPersona
+      description: ' La siguiente lambda, obtiene una persona o más a través del idPersona. Si este campo se filtra por “all”, el servicio listara todas las personas que se encuentren registradas en Dynamo. Si no se desea listar todos los registros, se debe filtrar por el ID de la persona.'
+      parameters:
+      - name: idPersona
+        in: path
+        description: ID de la persona a obtener
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: all
+      responses:
+        "200":
+          description: Proceso exitoso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+        "404":
+          description: Dato no encontrado en dynamoDB.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404'
+  /challenge/personas/registrar:
+    post:
+      tags:
+      - personas
+      summary: Registrar Persona por idPersona
+      description: La siguiente lambda, registra una persona a través del idPersona. Si este campo no se encuentra en el api de pruebas SWAPI, se procederá a registrar los datos ingresados en la petición POST. Caso contrario, se priorizaran los datos de respuesta del api de pruebas SWAPI.
+      operationId: idPersona
+      requestBody:
+        description: idPersona obtenido de SWAPI
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonaReq'
+        required: true
+      responses:
+        "200":
+          description: Operacion exitosa
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/data'
+        "404":
+          description: Dato no encontrado en SWAPI. Se omitio el registro.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_404_1'
+        "500":
+          description: Error al guardar en dynamoDB
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_500'
+components:
+  schemas:
+    data:
+      required:
+      - colorCabello
+      - colorOjos
+      - colorPiel
+      - especies
+      - fechaCreacion
+      - fechaEdicion
+      - fechaNacimiento
+      - genero
+      - idPersona
+      - masa
+      - mundoNatal
+      - navesEstelares
+      - nombre
+      - peliculas
+      - peso
+      - url
+      - vehiculos
+      type: object
+      properties:
+        nombre:
+          type: string
+          example: Luke Skywalker
+        masa:
+          type: string
+          example: "77"
+        colorCabello:
+          type: string
+          example: blond
+        vehiculos:
+          type: array
+          items:
+            $ref: '#/components/schemas/Vehiculos'
+        idPersona:
+          type: string
+          example: "1"
+        mundoNatal:
+          type: string
+        fechaNacimiento:
+          type: string
+          example: 19BBY
+        url:
+          type: string
+          example: https://swapi.py4e.com/api/people/1/
+        peso:
+          type: string
+          example: "172"
+        peliculas:
+          type: array
+          items:
+            $ref: '#/components/schemas/Peliculas'
+        navesEstelares:
+          type: array
+          items:
+            $ref: '#/components/schemas/NavesEstelares'
+        colorOjos:
+          type: string
+          example: blue
+        colorPiel:
+          type: string
+          example: fair
+        fechaEdicion:
+          type: string
+          example: 2014-12-20T21:17:56.891000Z
+        especies:
+          type: array
+          items:
+            $ref: '#/components/schemas/Especies'
+        fechaCreacion:
+          type: string
+          example: 2014-12-09T13:50:51.644000Z
+        genero:
+          type: string
+          example: male
+    Vehiculos:
+      type: string
+      example: https://swapi.py4e.com/api/vehicles/14/
+    Peliculas:
+      type: string
+      example: https://swapi.py4e.com/api/films/1/
+    NavesEstelares:
+      type: string
+      example: https://swapi.py4e.com/api/starships/12/
+    Especies:
+      type: string
+      example: https://swapi.py4e.com/api/species/1/
+    PersonaReq:
+      type: object
+      properties:
+        idPersona:
+          type: integer
+          format: int64
+          example: 16
+        nombre:
+          type: string
+          example: Luke Skywalker
+        masa:
+          type: string
+          example: "77"
+        colorCabello:
+          type: string
+          example: blond
+        vehiculos:
+          type: array
+          items:
+            $ref: '#/components/schemas/Vehiculos'
+        mundoNatal:
+          type: string
+        fechaNacimiento:
+          type: string
+          example: 19BBY
+        url:
+          type: string
+          example: https://swapi.py4e.com/api/people/1/
+        peso:
+          type: string
+          example: "172"
+        peliculas:
+          type: array
+          items:
+            $ref: '#/components/schemas/Peliculas'
+        navesEstelares:
+          type: array
+          items:
+            $ref: '#/components/schemas/NavesEstelares'
+        colorOjos:
+          type: string
+          example: blue
+        colorPiel:
+          type: string
+          example: fair
+        fechaModificacion:
+          type: string
+        especies:
+          type: array
+          items:
+            $ref: '#/components/schemas/Especies'
+        fechaCreacion:
+          type: string
+        genero:
+          type: string
+          example: male
+      xml:
+        name: Order
+    inline_response_200:
+      required:
+      - response
+      - success
+      type: object
+      properties:
+        response:
+          $ref: '#/components/schemas/inline_response_200_response'
+        success:
+          type: boolean
+          example: true
+    inline_response_404:
+      required:
+      - response
+      - success
+      type: object
+      properties:
+        response:
+          $ref: '#/components/schemas/inline_response_404_response'
+    inline_response_404_1:
+      required:
+      - response
+      - success
+      type: object
+      properties:
+        response:
+          $ref: '#/components/schemas/inline_response_404_1_response'
+    inline_response_500:
+      required:
+      - response
+      - success
+      type: object
+      properties:
+        response:
+          $ref: '#/components/schemas/inline_response_500_response'
+    inline_response_200_response:
+      required:
+      - data
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/data'
+    inline_response_404_response_error:
+      required:
+      - code
+      - errMsg
+      - statusCode
+      type: object
+      properties:
+        code:
+          type: string
+          example: "0000004"
+        statusCode:
+          type: integer
+          example: 404
+        errMsg:
+          type: string
+          example: Dato no encontrado en dynamoDB.
+    inline_response_404_response:
+      required:
+      - data
+      - error
+      - success
+      type: object
+      properties:
+        data:
+          type: string
+        success:
+          type: boolean
+          example: false
+        error:
+          $ref: '#/components/schemas/inline_response_404_response_error'
+    inline_response_404_1_response_error:
+      required:
+      - code
+      - errMsg
+      - statusCode
+      type: object
+      properties:
+        code:
+          type: string
+          example: "0000001"
+        statusCode:
+          type: integer
+          example: 404
+        errMsg:
+          type: string
+          example: Dato no encontrado en SWAPI. Se omitio el registro.
+    inline_response_404_1_response:
+      required:
+      - data
+      - error
+      - success
+      type: object
+      properties:
+        data:
+          type: string
+        success:
+          type: boolean
+          example: false
+        error:
+          $ref: '#/components/schemas/inline_response_404_1_response_error'
+    inline_response_500_response_error:
+      required:
+      - code
+      - errMsg
+      - statusCode
+      type: object
+      properties:
+        code:
+          type: string
+          example: "0000002"
+        statusCode:
+          type: integer
+          example: 500
+        errMsg:
+          type: string
+          example: Error al guardar en dynamoDB
+    inline_response_500_response:
+      required:
+      - data
+      - error
+      - success
+      type: object
+      properties:
+        data:
+          type: string
+        success:
+          type: boolean
+          example: false
+        error:
+          $ref: '#/components/schemas/inline_response_500_response_error'
