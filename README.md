@@ -2,7 +2,8 @@
 
 #### Servicio desarrollado para reto-rimac
 
-##### Puedes encontrar el documento de integracion en [Google Drive](https://www.google.com.pe/)
+##### Puedes encontrar el documento de integracion en [Google Drive](https://drive.google.com/file/d/1aK8lPkCdxsd2u6G5XvH02KRN6twSCtdp/view?usp=sharing)
+### Ademas de la documentacion en [SWAGGER](https://app.swaggerhub.com/apis-docs/JMAppsIA/api-reto_rimac_swapi/1.0.0-oas3)
 
 ## Instalacion
 
