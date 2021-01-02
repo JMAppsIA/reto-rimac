@@ -1,91 +1,40 @@
-# Setup
-- npm install
-- npm start
----
-# reto-rimac
+# API-RETO-RIMAC
 
-############################################################
-## Best Practice JavaScript
+#### Servicio desarrollado plara reto-rimac
 
-#String
-#Bad
-    const name = "Capt. Janeway";
+##### Puedes encontrar el documento de integracion en [Google Drive](https://www.google.com.pe/)
 
-    // template literals should contain interpolation or newlines
-    const name = `Capt. Janeway`;
+## Instalacion
 
-    const val = 'abc';
-    console.log('The value is ' + val) ;
-#Good
-    const name = 'Capt. Janeway';
+#### Usa el siguiente comando [npm](https://www.npmjs.com/get-npm) para instalar las dependencias.
 
-    const val = 'abc';
-    console.log(`The value is ${val}`);
+```bash
+npm install
+```
 
----
-#Nomenclature
-    Classes => DummyClass {...} (UpperCamelCase)
-    Variables and Functions => dummyClass (camelCase)
+#### Para iniciar el proyecto ejecuta:
 
----
-#Declaration of variables
-#Bad
-    var value = 'abc'
-#Good
-    const valueConstant = 'abc'
-    let valueDynamic = 'cba'; valueDynamic = 'abcdef' 
+```bash
+npm start
+```
 
----
-#Arrays
-#Bad
-    const items = new Array();
+## Pruebas
 
-    const arr = [1, 2, 3, 4];
-    const first = arr[0];
-    const second = arr[1];
-#Good
-    const items = [];
+#### Para realizar pruebas, ejecuta el siguiente comando:
 
-    const arr = [1, 2, 3, 4];
-    const [first, two, c] = arr; 
+-   #####   NPM
+```bash
+npm run test
+```
 
----
-#Arrow Functions
-#Bad
-    [1, 2, 3].map(function (x) {
-        const y = x + 1;
-        return x * y;
-    });
+## Despliegue
 
-    [1, 2, 3].map(number => {
-        const nextNumber = number + 1;
-        `A string containing the ${nextNumber}.`;
-    });
-
-    foo(() => bool = true);
-#Good
-    [1, 2, 3].map((x) => {
-        const y = x + 1;
-        return x * y;
-    });
-
-    [1, 2, 3].map(number => `A string containing the ${number}.`);
-
-    [1, 2, 3].map((number) => {
-        const nextNumber = number + 1;
-        return `A string containing the ${nextNumber}.`;
-    });
-
-    foo(() => {
-        bool = true;
-    });
-
----
-#Comparison Operators & Equality
-    Use === and !== over == and !=
-    Objects evaluate to true
-    Undefined evaluates to false
-    Null evaluates to false
-    Booleans evaluate to the value of the boolean
-    Numbers evaluate to false if +0, -0, or NaN, otherwise true
-    Strings evaluate to false if an empty string '', otherwise true
+-   ##### Ejecutando comando npm:
+```bash
+npm run deploy
+```
+    
+-   ##### Ejecutando comando serverless:
+```bash
+serverless deploy
+```
