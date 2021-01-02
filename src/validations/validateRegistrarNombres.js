@@ -1,5 +1,5 @@
 const Joi = require('@hapi/joi');
-module.exports.ValidateRegistrarNombres = () => {
+module.exports.validateRegistrarNombres = () => {
     const validatorSchema = Joi.object().keys({
         idPersona: Joi.number().min(0).required(),
         nombre: Joi.string().allow("").required(),

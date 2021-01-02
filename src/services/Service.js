@@ -37,7 +37,7 @@ class Service {
             );
           return data;
         } catch (error) {  
-                                 
+            console.error(error)                     
         }
     }
 
@@ -47,22 +47,22 @@ class Service {
         //Validamos si existe data, para obtener los campos e insertarlos en Dynamo, sino insertamos el request enviado.
         const items = {
           idPersona: String(idPersona),
-          nombre: data? data.name:request.nombre,
-          peso: data? data.height: request.peso,
-          masa: data? data.mass: request.masa,
-          colorCabello: data? data.hair_color: request.colorCabello,
-          colorPiel: data? data.skin_color: request.colorPiel,
-          colorOjos: data? data.eye_color: request.colorOjos,
-          fechaNacimiento: data? data.birth_year: request.fechaNacimiento,
-          genero: data? data.gender: request.genero,
-          mundoNatal: data? data.homeworld: request.mundoNatal,
-          peliculas: data? data.films: request.peliculas,
-          especies: data? data.species: request.especies,
-          vehiculos: data? data.vehicles: request.vehiculos,
-          navesEstelares: data? data.starships: request.navesEstelares,
-          fechaCreacion: data? extractDateFromDateTime(data.created): extractDateFromDateTime(request.fechaCreacion),
-          fechaModificacion: data? extractDateFromDateTime(data.edited): extractDateFromDateTime(request.fechaModificacion),
-          url: data? data.url: request.url
+          nombre: request.nombre ? request.nombre :  data.name,
+          peso: request.peso ? request.peso :  data.height,
+          masa: request.masa ? request.masa :  data.mass,
+          colorCabello: request.colorCabello ? request.colorCabello :  data.hair_color,
+          colorPiel: request.colorPiel ? request.colorPiel :  data.skin_color,
+          colorOjos: request.colorOjos ? request.colorOjos :  data.eye_color,
+          fechaNacimiento: request.fechaNacimiento ? request.fechaNacimiento :  data.birth_year,
+          genero: request.genero ? request.genero :  data.gender,
+          mundoNatal: request.mundoNatal ? request.mundoNatal :  data.homeworld,
+          peliculas: request.peliculas ? request.peliculas :  data.films,
+          especies: request.especies ? request.especies :  data.species,
+          vehiculos: request.vehiculos ? request.vehiculos :  data.vehicles,
+          navesEstelares: request.navesEstelares ? request.navesEstelares :  data.starships,
+          fechaCreacion: request.fechaCreacion ? request.fechaCreacion :  extractDateFromDateTime(data.created),
+          fechaModificacion: request.fechaModificacion ? request.fechaModificacion :  extractDateFromDateTime(data.edited),
+          url: request.url ? request.url : data.url
         };
         const params = {
           TableName: process.env.DYNAMO_TABLE_NAME,
@@ -72,7 +72,7 @@ class Service {
         };
         await dynamoDb.put(params).promise();                
       } catch (error) {
-        console.error("error -> ", error);
+        console.error(`error --> ${error}`);
         throw new ErrorUtils({
           code: ERROR_CONSTANTS.ERROR_SAVE.code,
           statusCode: ERROR_CONSTANTS.ERROR_SAVE.httpCode,
@@ -94,7 +94,7 @@ class Service {
           ExpressionAttributeValues: {
             ':idPersona': String(idPersona),
           },
-          TableName: 'DBPERSONAS',//process.env.DYNAMO_TABLE_NAME,
+          TableName: process.env.DYNAMO_TABLE_NAME,
         };
 
         paramsScan = {

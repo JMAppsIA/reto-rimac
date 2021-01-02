@@ -5,7 +5,7 @@ class Utils {
     static createResponse(res) {
         const obj = {
             response: {       
-                msg: 'Operacion realizada correctamente',
+                msg: `Operacion realizada correctamente`,
                 data: res,
                 success: true,
               }
@@ -24,6 +24,7 @@ class Utils {
               'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
             },
           };
+          console.log(response.body);
           return response;
     }
 
@@ -64,8 +65,8 @@ class Utils {
     }
 
     static extractDateFromDateTime(date) {
-      var datetime = moment(date,["DD/MM/YYYY","YYYY-MM-DD"]);
-      const fecha = datetime.format('DD/MM/YYYY');
+      var datetime = moment(date,[`DD/MM/YYYY`,`YYYY-MM-DD`]);
+      const fecha = datetime.format(`DD/MM/YYYY`);
       return fecha;
     }
 

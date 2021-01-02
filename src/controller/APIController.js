@@ -2,17 +2,17 @@ const { required } = require("@hapi/joi");
 const Service = require("../services/Service");
 const Utils = require("../utils/Utils");
 const ValidationUtils = require("../utils/ValidationUtils");
-const { ValidateRegistrarNombres } = require("../validations/validateRegistrarNombres");
+const { validateRegistrarNombres } = require("../validations/validateRegistrarNombres");
 
 
     module.exports.registrarNombres = async (event) => {          
         try {
             const request = Utils.getRequest(event);   
-            await ValidationUtils.validateRequest(request,ValidateRegistrarNombres());                 
+            await ValidationUtils.validateRequest(request,validateRegistrarNombres());                 
             const result = await Service.registrarNombres(request);
             return Utils.createResponse(result);            
         } catch (error) {
-            console.error("error >>> ", error);            
+            console.error(`error >>> ${error}`);            
             return Utils.createErrorResponse(error);
         }     
     }
@@ -22,7 +22,7 @@ const { ValidateRegistrarNombres } = require("../validations/validateRegistrarNo
             const result = await Service.obtenerNombresDynamo(event);
             return Utils.createResponse(result);            
         } catch (error) {
-            console.error("error >>> ", error);
+            console.error(`error >>> ${error}`);
             return Utils.createErrorResponse(error);
         }
     }

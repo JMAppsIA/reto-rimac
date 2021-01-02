@@ -2,7 +2,6 @@ require('dotenv').config();
 const { obtenerNombres, registrarNombres } = require('../../src/controller/APIController');
 const requestPersonaRegistro = require('../data/registrarPersona.request.json');
 const requestPersonaConsulta = require('../data/registrarPersona.request.json');
-require('dotenv').config();
 
 describe('APIController Spec ', () => {
   it('Response obtenerNombres must be true', async () => {
