@@ -56,10 +56,10 @@ class Service {
           fechaNacimiento: request.fechaNacimiento ? request.fechaNacimiento :  data.birth_year,
           genero: request.genero ? request.genero :  data.gender,
           mundoNatal: request.mundoNatal ? request.mundoNatal :  data.homeworld,
-          peliculas: request.peliculas ? request.peliculas :  data.films,
-          especies: request.especies ? request.especies :  data.species,
-          vehiculos: request.vehiculos ? request.vehiculos :  data.vehicles,
-          navesEstelares: request.navesEstelares ? request.navesEstelares :  data.starships,
+          peliculas: request.peliculas.length > 0 ? request.peliculas :  data.films,
+          especies: request.especies.length > 0 ? request.especies :  data.species,
+          vehiculos: request.vehiculos.length > 0 ? request.vehiculos :  data.vehicles,
+          navesEstelares: request.navesEstelares.length > 0 ? request.navesEstelares :  data.starships,
           fechaCreacion: request.fechaCreacion ? request.fechaCreacion :  extractDateFromDateTime(data.created),
           fechaModificacion: request.fechaModificacion ? request.fechaModificacion :  extractDateFromDateTime(data.edited),
           url: request.url ? request.url : data.url
@@ -103,7 +103,7 @@ class Service {
         };
 
         if(idPersona) {
-          if(idPersona == 0){
+          if(idPersona == 'all'){
             dynamo = await dynamoDb.scan(paramsScan).promise();
           } else {
             dynamo = await dynamoDb.query(params).promise();            
