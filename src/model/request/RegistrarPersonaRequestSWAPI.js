@@ -1,4 +1,4 @@
-class RegistrarPersonaRequest {
+class RegistrarPersonaRequestSWAPI {
     constructor({
         name = undefined,
         height = undefined,
@@ -37,5 +37,5 @@ class RegistrarPersonaRequest {
     }
   }
   
-  module.exports = RegistrarPersonaRequest;
+  module.exports = RegistrarPersonaRequestSWAPI;
   
