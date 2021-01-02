@@ -1,0 +1,19 @@
+obtenerNombres:
+  handler: src/controller/APIController.obtenerNombres
+  name: ${file(./serverless.yml):custom.regionName.${file(./serverless.yml):provider.region}}${file(./serverless.yml):provider.stage}LAMBDASWAPI01
+  description: OBTENER NOMBRES    
+  events:
+    - http:
+        path: /challenge/personas/obtener/{idPersona}
+        method: get
+        cors: true
+        
+registrarNombres:
+  handler: src/controller/APIController.registrarNombres
+  name: ${file(./serverless.yml):custom.regionName.${file(./serverless.yml):provider.region}}${file(./serverless.yml):provider.stage}LAMBDASWAPI02
+  description: REGISTRAR NOMBRES
+  events:
+    - http:
+        path: /challenge/personas/registrar
+        method: post
+        cors: true 

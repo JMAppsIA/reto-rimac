@@ -25,6 +25,10 @@ module.exports.ERROR_CONSTANTS = {
         code:"0000004",
         httpCode: 404,
         message:"Dato no encontrado en dynamoDB."
+    },
+    VALIDATION_ERROR: {
+        code: "0000005",
+        httpCode: 404,        
     }
 };
 

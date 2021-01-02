@@ -1,0 +1,3 @@
+REGION: ${file(./serverless.yml):provider.region}
+DYNAMO_TABLE_NAME: "${file(./serverless.yml):custom.dynamoTableName}"
+SWAPI_HOST: "swapi.py4e.com" 

@@ -1,10 +1,11 @@
 const { RESPONSE_CONSTANTS } = require('./APIConstants');
-
+const moment = require('moment');
 class Utils {
 
     static createResponse(res) {
         const obj = {
-            response: {             
+            response: {       
+                msg: 'Operacion realizada correctamente',
                 data: res,
                 success: true,
               }
@@ -31,12 +32,12 @@ class Utils {
         response: {
             data: null,
             success: false,
-            error: error,
+            error: error
           },
       };
 
       const response = {
-        statusCode: error.statusCode,
+        statusCode: error.statusCode?error.statusCode: 400,
         body: JSON.stringify(obj),
         headers: {
           'Access-Control-Allow-Origin': '*',
@@ -56,9 +57,18 @@ class Utils {
       let request;
       if (event.body) {
         request = JSON.parse(event.body);
+      } else {
+        request = event;
       }
       return request;
     }
+
+    static extractDateFromDateTime(date) {
+      var datetime = moment(date,["DD/MM/YYYY","YYYY-MM-DD"]);
+      const fecha = datetime.format('DD/MM/YYYY');
+      return fecha;
+    }
+
 }
 
 module.exports = Utils;

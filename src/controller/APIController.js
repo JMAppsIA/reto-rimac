@@ -1,13 +1,18 @@
+const { required } = require("@hapi/joi");
 const Service = require("../services/Service");
 const Utils = require("../utils/Utils");
-    
-    module.exports.registrarNombres = async (event) => {           
+const ValidationUtils = require("../utils/ValidationUtils");
+const { ValidateRegistrarNombres } = require("../validations/validateRegistrarNombres");
+
+
+    module.exports.registrarNombres = async (event) => {          
         try {
-            const request = Utils.getRequest(event);        
+            const request = Utils.getRequest(event);   
+            await ValidationUtils.validateRequest(request,ValidateRegistrarNombres());                 
             const result = await Service.registrarNombres(request);
             return Utils.createResponse(result);            
         } catch (error) {
-            console.error("error >>> ", error);
+            console.error("error >>> ", error);            
             return Utils.createErrorResponse(error);
         }     
     }

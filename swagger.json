@@ -1,19 +1,23 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.0.0",
   "info": {
-    "description": "Swagger para el API desarrollada (Reto Rimac)",
-    "version": "1.0.0",
     "title": "Swagger Reto Rimac - SWAPI",
+    "description": "Swagger para el API desarrollada (Reto Rimac) \n",
     "contact": {
       "email": "jorge.herrera.tume@gmail.com"
     },
     "license": {
       "name": "Apache 2.0",
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-    }
+    },
+    "version": "1.0.0-oas3"
   },
-  "host": "virtserver.swaggerhub.com",
-  "basePath": "/JMAppsIA/api-reto-rimac/1.0.0",
+  "servers": [
+    {
+      "url": "https://h7mga73h1a.execute-api.us-east-2.amazonaws.com/TEST",
+      "description": "Ambiente de pruebas (TEST)"
+    }
+  ],
   "tags": [
     {
       "name": "personas",
@@ -24,10 +28,6 @@
       }
     }
   ],
-  "schemes": [
-    "https",
-    "http"
-  ],
   "paths": {
     "/challenge/personas/obtener/{idPersona}": {
       "get": {
@@ -36,31 +36,40 @@
         ],
         "summary": "Obtener persona por idPersona",
         "description": "Obtiene persona por idPersona",
-        "produces": [
-          "application/json"
-        ],
         "parameters": [
           {
             "name": "idPersona",
             "in": "path",
             "description": "ID de la persona a obtener",
             "required": true,
-            "type": "integer",
-            "minimum": 0,
-            "format": "int64"
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "minimum": 0,
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "Proceso exitoso",
-            "schema": {
-              "$ref": "#/definitions/inline_response_200"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200"
+                }
+              }
             }
           },
           "404": {
             "description": "Dato no encontrado en dynamoDB.",
-            "schema": {
-              "$ref": "#/definitions/inline_response_404"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_404"
+                }
+              }
             }
           }
         }
@@ -71,361 +80,435 @@
         "tags": [
           "personas"
         ],
-        "summary": "registrar Persona por idPersona",
-        "description": "",
+        "summary": "Registrar Persona por idPersona",
+        "description": "Registrar Persona por idPersona",
         "operationId": "idPersona",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "description": "idPersona obtenido de SWAPI",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/PersonaReq"
+        "requestBody": {
+          "description": "idPersona obtenido de SWAPI",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PersonaReq"
+              }
             }
-          }
-        ],
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "description": "Operacion exitosa",
-            "schema": {
-              "$ref": "#/definitions/data"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/data"
+                }
+              }
             }
           },
           "404": {
             "description": "Dato no encontrado en SWAPI. Se omitio el registro.",
-            "schema": {
-              "$ref": "#/definitions/inline_response_404_1"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_404_1"
+                }
+              }
             }
           },
           "500": {
             "description": "Error al guardar en dynamoDB",
-            "schema": {
-              "$ref": "#/definitions/inline_response_500"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_500"
+                }
+              }
             }
           }
         }
       }
     }
   },
-  "definitions": {
-    "data": {
-      "type": "object",
-      "required": [
-        "colorCabello",
-        "colorOjos",
-        "colorPiel",
-        "especies",
-        "genero",
-        "idPersona",
-        "masa",
-        "mundoHome",
-        "navesEstelares",
-        "nombre",
-        "peliculas",
-        "peso",
-        "url",
-        "vehiculos"
-      ],
-      "properties": {
-        "nombre": {
-          "type": "string",
-          "example": "Luke Skywalker"
-        },
-        "masa": {
-          "type": "string",
-          "example": "77"
-        },
-        "colorCabello": {
-          "type": "string",
-          "example": "blond"
-        },
-        "vehiculos": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Vehiculos"
+  "components": {
+    "schemas": {
+      "data": {
+        "required": [
+          "colorCabello",
+          "colorOjos",
+          "colorPiel",
+          "especies",
+          "fechaCreacion",
+          "fechaEdicion",
+          "fechaNacimiento",
+          "genero",
+          "idPersona",
+          "masa",
+          "mundoNatal",
+          "navesEstelares",
+          "nombre",
+          "peliculas",
+          "peso",
+          "url",
+          "vehiculos"
+        ],
+        "type": "object",
+        "properties": {
+          "nombre": {
+            "type": "string",
+            "example": "Luke Skywalker"
+          },
+          "masa": {
+            "type": "string",
+            "example": "77"
+          },
+          "colorCabello": {
+            "type": "string",
+            "example": "blond"
+          },
+          "vehiculos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Vehiculos"
+            }
+          },
+          "idPersona": {
+            "type": "string",
+            "example": "1"
+          },
+          "mundoNatal": {
+            "type": "string"
+          },
+          "fechaNacimiento": {
+            "type": "string",
+            "example": "19BBY"
+          },
+          "url": {
+            "type": "string",
+            "example": "https://swapi.py4e.com/api/people/1/"
+          },
+          "peso": {
+            "type": "string",
+            "example": "172"
+          },
+          "peliculas": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Peliculas"
+            }
+          },
+          "navesEstelares": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NavesEstelares"
+            }
+          },
+          "colorOjos": {
+            "type": "string",
+            "example": "blue"
+          },
+          "colorPiel": {
+            "type": "string",
+            "example": "fair"
+          },
+          "fechaEdicion": {
+            "type": "string",
+            "example": "2014-12-20T21:17:56.891000Z"
+          },
+          "especies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Especies"
+            }
+          },
+          "fechaCreacion": {
+            "type": "string",
+            "example": "2014-12-09T13:50:51.644000Z"
+          },
+          "genero": {
+            "type": "string",
+            "example": "male"
           }
-        },
-        "idPersona": {
-          "type": "string",
-          "example": "1"
-        },
-        "mundoHome": {
-          "type": "string"
-        },
-        "fechaNacimiento": {
-          "type": "string",
-          "example": "19BBY"
-        },
-        "url": {
-          "type": "string",
-          "example": "https://swapi.py4e.com/api/people/1/"
-        },
-        "peso": {
-          "type": "string",
-          "example": "172"
-        },
-        "peliculas": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Peliculas"
-          }
-        },
-        "navesEstelares": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/NavesEstelares"
-          }
-        },
-        "colorOjos": {
-          "type": "string",
-          "example": "blue"
-        },
-        "colorPiel": {
-          "type": "string",
-          "example": "fair"
-        },
-        "fechaEdicion": {
-          "type": "string",
-          "example": "2014-12-20T21:17:56.891000Z"
-        },
-        "especies": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Especies"
-          }
-        },
-        "fechaCreacion": {
-          "type": "string",
-          "example": "2014-12-09T13:50:51.644000Z"
-        },
-        "genero": {
-          "type": "string",
-          "example": "male"
-        }
-      }
-    },
-    "Vehiculos": {
-      "type": "string",
-      "example": "https://swapi.py4e.com/api/vehicles/14/"
-    },
-    "Peliculas": {
-      "type": "string",
-      "example": "https://swapi.py4e.com/api/films/1/"
-    },
-    "NavesEstelares": {
-      "type": "string",
-      "example": "https://swapi.py4e.com/api/starships/12/"
-    },
-    "Especies": {
-      "type": "string",
-      "example": "https://swapi.py4e.com/api/species/1/"
-    },
-    "PersonaReq": {
-      "type": "object",
-      "properties": {
-        "idPersona": {
-          "type": "integer",
-          "format": "int64",
-          "example": 1
         }
       },
-      "xml": {
-        "name": "Order"
-      }
-    },
-    "inline_response_200_response": {
-      "type": "object",
-      "required": [
-        "data"
-      ],
-      "properties": {
-        "data": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/data"
+      "Vehiculos": {
+        "type": "string",
+        "example": "https://swapi.py4e.com/api/vehicles/14/"
+      },
+      "Peliculas": {
+        "type": "string",
+        "example": "https://swapi.py4e.com/api/films/1/"
+      },
+      "NavesEstelares": {
+        "type": "string",
+        "example": "https://swapi.py4e.com/api/starships/12/"
+      },
+      "Especies": {
+        "type": "string",
+        "example": "https://swapi.py4e.com/api/species/1/"
+      },
+      "PersonaReq": {
+        "type": "object",
+        "properties": {
+          "idPersona": {
+            "type": "integer",
+            "format": "int64",
+            "example": 16
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "masa": {
+            "type": "string"
+          },
+          "colorCabello": {
+            "type": "string"
+          },
+          "vehiculos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Vehiculos"
+            }
+          },
+          "url": {
+            "type": "string"
+          },
+          "peso": {
+            "type": "string"
+          },
+          "fechaNacimiento": {
+            "type": "string"
+          },
+          "fechaModificacion": {
+            "type": "string"
+          },
+          "colorOjos": {
+            "type": "string"
+          },
+          "colorPiel": {
+            "type": "string"
+          },
+          "peliculas": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Peliculas"
+            }
+          },
+          "navesEstelares": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NavesEstelares"
+            }
+          },
+          "especies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Especies"
+            }
+          },
+          "fechaCreacion": {
+            "type": "string"
+          },
+          "mundoNatal": {
+            "type": "string"
+          },
+          "genero": {
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "Order"
+        }
+      },
+      "inline_response_200": {
+        "required": [
+          "response",
+          "success"
+        ],
+        "type": "object",
+        "properties": {
+          "response": {
+            "$ref": "#/components/schemas/inline_response_200_response"
+          },
+          "success": {
+            "type": "boolean",
+            "example": true
           }
         }
-      }
-    },
-    "inline_response_200": {
-      "type": "object",
-      "required": [
-        "response",
-        "success"
-      ],
-      "properties": {
-        "response": {
-          "$ref": "#/definitions/inline_response_200_response"
-        },
-        "success": {
-          "type": "boolean",
-          "example": true
+      },
+      "inline_response_404": {
+        "required": [
+          "response",
+          "success"
+        ],
+        "type": "object",
+        "properties": {
+          "response": {
+            "$ref": "#/components/schemas/inline_response_404_response"
+          }
         }
-      }
-    },
-    "inline_response_404_response_error": {
-      "type": "object",
-      "required": [
-        "code",
-        "errMsg",
-        "statusCode"
-      ],
-      "properties": {
-        "code": {
-          "type": "string",
-          "example": "0000004"
-        },
-        "statusCode": {
-          "type": "integer",
-          "example": 404
-        },
-        "errMsg": {
-          "type": "string",
-          "example": "Dato no encontrado en dynamoDB."
+      },
+      "inline_response_404_1": {
+        "required": [
+          "response",
+          "success"
+        ],
+        "type": "object",
+        "properties": {
+          "response": {
+            "$ref": "#/components/schemas/inline_response_404_1_response"
+          }
         }
-      }
-    },
-    "inline_response_404_response": {
-      "type": "object",
-      "required": [
-        "data",
-        "error",
-        "success"
-      ],
-      "properties": {
-        "data": {
-          "type": "string"
-        },
-        "success": {
-          "type": "boolean",
-          "example": false
-        },
-        "error": {
-          "$ref": "#/definitions/inline_response_404_response_error"
+      },
+      "inline_response_500": {
+        "required": [
+          "response",
+          "success"
+        ],
+        "type": "object",
+        "properties": {
+          "response": {
+            "$ref": "#/components/schemas/inline_response_500_response"
+          }
         }
-      }
-    },
-    "inline_response_404": {
-      "type": "object",
-      "required": [
-        "response"
-      ],
-      "properties": {
-        "response": {
-          "$ref": "#/definitions/inline_response_404_response"
+      },
+      "inline_response_200_response": {
+        "required": [
+          "data"
+        ],
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/data"
+            }
+          }
         }
-      }
-    },
-    "inline_response_404_1_response_error": {
-      "type": "object",
-      "required": [
-        "code",
-        "errMsg",
-        "statusCode"
-      ],
-      "properties": {
-        "code": {
-          "type": "string",
-          "example": "0000001"
-        },
-        "statusCode": {
-          "type": "integer",
-          "example": 404
-        },
-        "errMsg": {
-          "type": "string",
-          "example": "Dato no encontrado en SWAPI. Se omitio el registro."
+      },
+      "inline_response_404_response_error": {
+        "required": [
+          "code",
+          "errMsg",
+          "statusCode"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "0000004"
+          },
+          "statusCode": {
+            "type": "integer",
+            "example": 404
+          },
+          "errMsg": {
+            "type": "string",
+            "example": "Dato no encontrado en dynamoDB."
+          }
         }
-      }
-    },
-    "inline_response_404_1_response": {
-      "type": "object",
-      "required": [
-        "data",
-        "error",
-        "success"
-      ],
-      "properties": {
-        "data": {
-          "type": "string"
-        },
-        "success": {
-          "type": "boolean",
-          "example": false
-        },
-        "error": {
-          "$ref": "#/definitions/inline_response_404_1_response_error"
+      },
+      "inline_response_404_response": {
+        "required": [
+          "data",
+          "error",
+          "success"
+        ],
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "$ref": "#/components/schemas/inline_response_404_response_error"
+          }
         }
-      }
-    },
-    "inline_response_404_1": {
-      "type": "object",
-      "required": [
-        "response"
-      ],
-      "properties": {
-        "response": {
-          "$ref": "#/definitions/inline_response_404_1_response"
+      },
+      "inline_response_404_1_response_error": {
+        "required": [
+          "code",
+          "errMsg",
+          "statusCode"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "0000001"
+          },
+          "statusCode": {
+            "type": "integer",
+            "example": 404
+          },
+          "errMsg": {
+            "type": "string",
+            "example": "Dato no encontrado en SWAPI. Se omitio el registro."
+          }
         }
-      }
-    },
-    "inline_response_500_response_error": {
-      "type": "object",
-      "required": [
-        "code",
-        "errMsg",
-        "statusCode"
-      ],
-      "properties": {
-        "code": {
-          "type": "string",
-          "example": "0000002"
-        },
-        "statusCode": {
-          "type": "integer",
-          "example": 500
-        },
-        "errMsg": {
-          "type": "string",
-          "example": "Error al guardar en dynamoDB"
+      },
+      "inline_response_404_1_response": {
+        "required": [
+          "data",
+          "error",
+          "success"
+        ],
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "$ref": "#/components/schemas/inline_response_404_1_response_error"
+          }
         }
-      }
-    },
-    "inline_response_500_response": {
-      "type": "object",
-      "required": [
-        "data",
-        "error",
-        "success"
-      ],
-      "properties": {
-        "data": {
-          "type": "string"
-        },
-        "success": {
-          "type": "boolean",
-          "example": false
-        },
-        "error": {
-          "$ref": "#/definitions/inline_response_500_response_error"
+      },
+      "inline_response_500_response_error": {
+        "required": [
+          "code",
+          "errMsg",
+          "statusCode"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "0000002"
+          },
+          "statusCode": {
+            "type": "integer",
+            "example": 500
+          },
+          "errMsg": {
+            "type": "string",
+            "example": "Error al guardar en dynamoDB"
+          }
         }
-      }
-    },
-    "inline_response_500": {
-      "type": "object",
-      "required": [
-        "response"
-      ],
-      "properties": {
-        "response": {
-          "$ref": "#/definitions/inline_response_500_response"
+      },
+      "inline_response_500_response": {
+        "required": [
+          "data",
+          "error",
+          "success"
+        ],
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "string"
+          },
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "$ref": "#/components/schemas/inline_response_500_response_error"
+          }
         }
       }
     }

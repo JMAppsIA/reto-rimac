@@ -9,11 +9,11 @@ provider:
   #region: us-east-2
   region: ${self:custom.regionName.${self:provider.stage}}
   stage: ${opt:stage,'TEST'}
+  apiGateway:
+    shouldStartNameWithService: true
 
-  environment:
-    REGION: ${self:provider.region}
-    DYNAMO_TABLE_NAME: "${self:custom.dynamoTableName}"
-    SWAPI_HOST: "swapi.py4e.com" 
+  #Environment Variables  
+  environment: ${file(configuration/serverless/variables.yml)}  
 
 # Custom Variables
 custom:  
@@ -21,7 +21,6 @@ custom:
     TEST: us-east-2 
     us-east-2: UEAST2
   dynamoTableName: ${ssm:/reto-rimac/test/dynamo-table-name}
-
 
 plugins:
   - serverless-offline
@@ -31,27 +30,5 @@ package:
   include:
   - node_modules/**
 
-functions:
-  obtenerNombres:
-    handler: src/controller/APIController.obtenerNombres
-    name: ${self:custom.regionName.${self:provider.region}}COM${self:provider.stage}LAMBDASWAPI01
-    description: OBTENER NOMBRES    
-    events:
-      - http:
-          path: /challenge/personas/obtener/{idPersona}
-          method: get
-          cors: true
-          
-  registrarNombres:
-    handler: src/controller/APIController.registrarNombres
-    name: ${self:custom.regionName.${self:provider.region}}COM${self:provider.stage}LAMBDASWAPI02
-    description: REGISTRAR NOMBRES
-    events:
-      - http:
-          path: /challenge/personas/registrar
-          method: post
-          cors: true
-          request:
-            parameters:
-              paths:
-                accion: true          
+functions: ${file(configuration/serverless/functions.yml)} 
+         

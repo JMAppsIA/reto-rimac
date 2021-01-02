@@ -1,0 +1,21 @@
+{
+    "nombre": "Jorge Herrera",
+    "masa": "89",
+    "colorCabello": "brown",
+    "vehiculos": [],
+    "idPersona": "200",
+    "url": "https://swapi.py4e.com/api/people/32/",
+    "peso": "193",
+    "fechaNacimiento": "92BBY",
+    "peliculas": [
+        "https://swapi.py4e.com/api/films/4/"
+    ],
+    "navesEstelares": [],
+    "fechaModificacion": "2014-12-20T21:17:50.375000Z",
+    "colorOjos": "blue",
+    "colorPiel": "fair",
+    "especies": [],
+    "fechaCreacion": "2014-12-19T16:54:53.618000Z",
+    "mundoNatal": "https://swapi.py4e.com/api/planets/28/",
+    "genero": "male"
+}

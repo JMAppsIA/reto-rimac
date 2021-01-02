@@ -3,76 +3,72 @@ const AWS = require('aws-sdk');
 const Axios = require('axios');
 const { ERROR_CONSTANTS } = require('../utils/APIConstants');
 const ErrorUtils = require('../utils/ErrorUtils');
+const { extractDateFromDateTime } = require('../utils/Utils');
 const dynamoDb = new AWS.DynamoDB.DocumentClient({region: process.env.REGION});
 class Service {
-    static async registrarNombres(request) {        
-        try {
-          const {idPersona} = request;
-          let response = await this.consumeStarWarsAPI(request);    
-          let data = null;                    
-          if(response) {
-            await this.insertarRegistroDynamo(request,response);            
-            data = await this.obtenerNombresDynamo(null,idPersona);
-          }
-          
+    static async registrarNombres(request) {   
+        let responseFinal = {};     
+        let data = null;
+        try {          
+          const {idPersona} = request;       
+          //Consumimos el api externa SWAPI   
+          const response = await this.consumeStarWarsAPI(request);
+          //Insertamos la respuesta a DynamoDB                              
+          await this.insertarRegistroDynamo(request,response);            
+          data = await this.obtenerNombresDynamo(null,idPersona);
+
           if(data) {
-            response = data;
-            response.msg = 'Se registro el dato correctamente';          
+            responseFinal = data;
           }
-          console.log("response -> ", response)
-          return response;
+
+          return responseFinal;
         } catch (error) {         
-          throw new ErrorUtils({
-            code: ERROR_CONSTANTS.NOT_FOUND.code,
-            statusCode: ERROR_CONSTANTS.NOT_FOUND.httpCode,
-            errMsg: ERROR_CONSTANTS.NOT_FOUND.message,
-          });
+          console.error(error);
+          throw error;
         }
     }
 
     static async consumeStarWarsAPI(request) {
-        try {
+      try {
           const {idPersona} = request;
           const { data } = await Axios
             .get(
-              `https://${process.env.SWAPI_HOST}/api/people/${idPersona}`,
+            `https://${process.env.SWAPI_HOST}/api/people/${idPersona}`,
             );
           return data;
         } catch (error) {  
-          console.log("error -> ", error.message);      
-          throw new ErrorUtils({
-            code: ERROR_CONSTANTS.NOT_FOUND.code,
-            statusCode: ERROR_CONSTANTS.NOT_FOUND.httpCode,
-            errMsg: ERROR_CONSTANTS.NOT_FOUND.message,
-          });
+                                 
         }
     }
 
     static async insertarRegistroDynamo(request,data) {
       try {
         const {idPersona} = request;
+        //Validamos si existe data, para obtener los campos e insertarlos en Dynamo, sino insertamos el request enviado.
+        const items = {
+          idPersona: String(idPersona),
+          nombre: data? data.name:request.nombre,
+          peso: data? data.height: request.peso,
+          masa: data? data.mass: request.masa,
+          colorCabello: data? data.hair_color: request.colorCabello,
+          colorPiel: data? data.skin_color: request.colorPiel,
+          colorOjos: data? data.eye_color: request.colorOjos,
+          fechaNacimiento: data? data.birth_year: request.fechaNacimiento,
+          genero: data? data.gender: request.genero,
+          mundoNatal: data? data.homeworld: request.mundoNatal,
+          peliculas: data? data.films: request.peliculas,
+          especies: data? data.species: request.especies,
+          vehiculos: data? data.vehicles: request.vehiculos,
+          navesEstelares: data? data.starships: request.navesEstelares,
+          fechaCreacion: data? extractDateFromDateTime(data.created): extractDateFromDateTime(request.fechaCreacion),
+          fechaModificacion: data? extractDateFromDateTime(data.edited): extractDateFromDateTime(request.fechaModificacion),
+          url: data? data.url: request.url
+        };
         const params = {
           TableName: process.env.DYNAMO_TABLE_NAME,
-          Item: {
-            idPersona: String(idPersona),
-            nombre: data.name,
-            peso: data.height,
-            masa: data.mass,
-            colorCabello: data.hair_color,
-            colorPiel: data.skin_color,
-            colorOjos: data.eye_color,
-            fechaNacimiento:data.birth_year,
-            genero: data.gender,
-            hogar: data.homeworld,
-            peliculas: data.films,
-            especies: data.species,
-            vehiculos: data.vehicles,
-            navesEstelares: data.starships,
-            fechaCreacion: data.created,
-            fechaModificacion: data.edited,
-            url: data.url
-          },
-          Exists: false
+          Item: items,
+          Exists: false,
+          UpdateItem: false,
         };
         await dynamoDb.put(params).promise();                
       } catch (error) {
@@ -98,7 +94,7 @@ class Service {
           ExpressionAttributeValues: {
             ':idPersona': String(idPersona),
           },
-          TableName: process.env.DYNAMO_TABLE_NAME,
+          TableName: 'DBPERSONAS',//process.env.DYNAMO_TABLE_NAME,
         };
 
         paramsScan = {
@@ -110,7 +106,6 @@ class Service {
           if(idPersona == 0){
             dynamo = await dynamoDb.scan(paramsScan).promise();
           } else {
-            console.log("inputPersona -> ", inputPersona)
             dynamo = await dynamoDb.query(params).promise();            
           }
         } else {
