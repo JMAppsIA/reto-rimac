@@ -1,6 +1,6 @@
 # API-RETO-RIMAC
 
-#### Servicio desarrollado plara reto-rimac
+#### Servicio desarrollado para reto-rimac
 
 ##### Puedes encontrar el documento de integracion en [Google Drive](https://www.google.com.pe/)
 
